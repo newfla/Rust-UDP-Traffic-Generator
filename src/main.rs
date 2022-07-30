@@ -1,7 +1,7 @@
 use std::net::{SocketAddr, ToSocketAddrs};
 use std::time::{Instant, Duration};
 
-use log::{info};
+use log::{info,warn};
 use simple_logger::SimpleLogger;
 use rand::{thread_rng, Rng};
 use rand::distributions::Alphanumeric;
@@ -20,11 +20,16 @@ fn main() {
     let workers = cli.get_one::<usize>("workers");
 
     if let Some(workers) = workers {
-        rt = Builder::new_multi_thread()
-        .worker_threads(*workers)
-        .enable_all()
-        .build()
-        .unwrap();
+        if *workers > 0 {
+            rt = Builder::new_multi_thread()
+                .worker_threads(*workers)
+                .enable_all()
+                .build()
+                .unwrap();
+        } else {
+            warn!("Workers threads must be > 0. Switching to #CPU Core");
+        }
+        
     }
     
     rt.block_on(async {start_up_client(cli).await;});
