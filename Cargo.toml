@@ -1,0 +1,12 @@
+[package]
+name = "udp_traffic_generator"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+log = "0.4"
+simple_logger = "2.2.0"
+rand = "0.8"
+clap = "3.2.14"
+byte-unit = "4.0.14"
+tokio = { version = "1.20.0", features = ["full"] }
