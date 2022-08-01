@@ -2,6 +2,14 @@
 
 A CLI tool to generate UDP traffic based on [Tokio framework](https://https://tokio.rs).
 
+# Cargo Install
+Specify the flag *tokio_unstable*
+
+```
+RUSTFLAGS="--cfg tokio_unstable" cargo install udp_traffic_generator
+```
+
+# Help
 
 ```
 ./udp_traffic_generator --help
