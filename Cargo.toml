@@ -2,6 +2,14 @@
 name = "udp_traffic_generator"
 version = "0.1.0"
 edition = "2021"
+authors = ["Flavio Bizzarri <fl.bizzarri@gmail.com>"]
+license = "Apache-2.0"
+description = "A tool to generate UDP traffic"
+readme = "README.md"
+homepage = "https://github.com/newfla/Rust-UDP-Traffic-Generator"
+repository = "https://github.com/newfla/Rust-UDP-Traffic-Generator"
+keywords = ["cli", "udp", "client", "traffic", "packets", "generator"]
+categories = ["command-line-utilities"]
 
 [dependencies]
 log = "0.4"

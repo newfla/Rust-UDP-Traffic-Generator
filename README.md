@@ -1,6 +1,6 @@
 # Rust UDP Traffic Generator
 
-A basic CLI tool for generating UDP traffic based on [Tokio framework](https://https://tokio.rs).
+A CLI tool to generate UDP traffic based on [Tokio framework](https://https://tokio.rs).
 
 
 ```
