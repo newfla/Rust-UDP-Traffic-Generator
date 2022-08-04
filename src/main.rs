@@ -101,18 +101,15 @@ async fn client_sender_function(id: usize, socket: UdpSocket, server: SocketAddr
     let one_sec = Duration::new(1,0);
     loop { 
         let start_time = Instant::now();
-        let mut bytes_sent = 0;
-        let mut packets_sent = 0;
+        let mut packets_error = 0;
 
         for _ in 0..rate {
-            let bytes = socket.send_to(&payload, server).await;
-            if let Ok(bytes) = bytes {
-                bytes_sent += bytes;
-                packets_sent+=1;
+            if socket.send_to(&payload, server).await.is_err() {
+                packets_error+=1;
             }
         }
-
-        let _ = stats_tx.send((bytes_sent,packets_sent)).await;
+        let packets_sent = rate - packets_error;
+        let _ = stats_tx.send((packets_sent * payload.len(),packets_sent)).await;
 
         let time_elapsed = Instant::now() - start_time;
 

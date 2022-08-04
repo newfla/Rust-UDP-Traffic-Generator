@@ -1,6 +1,6 @@
 [package]
 name = "udp_traffic_generator"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 authors = ["Flavio Bizzarri <fl.bizzarri@gmail.com>"]
 license = "Apache-2.0"
