@@ -1,2 +1,2 @@
 [build]
-rustflags = ["--cfg", "tokio_unstable", "-C", "target-cpu=native"]
+rustflags = ["-C", "target-cpu=native"]
