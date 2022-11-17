@@ -1,9 +1,9 @@
-use std::net::SocketAddr;
+use std::{net::SocketAddr, time::Duration};
 
 use rand::{thread_rng, distributions::Alphanumeric, Rng};
 use statistics::stats_task;
 use sender::sender_task;
-use tokio::{net::UdpSocket, spawn, task::JoinSet};
+use tokio::{net::UdpSocket, time::sleep, task::JoinSet};
 
 mod statistics;
 mod sender;
@@ -24,6 +24,7 @@ pub async fn manager (params: Parameters) {
             sender_task(id, socket, params.server_addr, payload, params.rate, stats_tx_cloned).await
         });
         start_port+=1;
+        sleep(Duration::from_millis(100)).await;
     }
     while (tasks.join_next().await).is_some() {
 
