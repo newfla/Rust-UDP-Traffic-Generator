@@ -17,7 +17,9 @@ simple_logger = "2.3.0"
 rand = "0.8.5"
 clap = "3.2.20"
 byte-unit = "4.0.14"
-tokio = { version = "1.21.0", features = ["full"] }
+tokio = { version = "1.22.0", features = ["full"] }
+mimalloc = { version = "*", default-features = false }
 
 [profile.release]
 lto = true
+panic = "abort"

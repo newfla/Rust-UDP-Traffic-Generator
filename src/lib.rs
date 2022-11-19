@@ -17,11 +17,12 @@ pub async fn manager (params: Parameters) {
     let mut start_port = params.start_port; 
 
     for id in 0..params.connections {
-        let socket = setup_socket(start_port).await;
+        let socket = setup_socket(start_port,params.server_addr).await;
         let payload = generate_payloads(params.len);
         let stats_tx_cloned = stats_tx.clone();
+        let x= Box::leak(Box::new(payload));
         tasks.spawn(async move {
-            sender_task(id, socket, params.server_addr, payload, params.rate, stats_tx_cloned).await
+            sender_task(id, socket, x, params.rate, stats_tx_cloned).await
         });
         start_port+=1;
         sleep(Duration::from_millis(100)).await;
@@ -31,8 +32,10 @@ pub async fn manager (params: Parameters) {
     }
 }
 
-async fn setup_socket(port: usize) -> UdpSocket{
-    UdpSocket::bind("0.0.0.0:".to_owned()+ &port.to_string()).await.unwrap()
+async fn setup_socket(port: usize, addr: SocketAddr) -> UdpSocket{
+    let socket = UdpSocket::bind("0.0.0.0:".to_owned()+ &port.to_string()).await.unwrap();
+    socket.connect(addr).await.unwrap();
+    socket
 }
 
 fn generate_payloads(len: usize) -> Vec<u8>{

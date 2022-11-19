@@ -6,8 +6,10 @@ use simple_logger::SimpleLogger;
 use clap::{App, Arg, ArgMatches};
 use tokio::runtime::{Builder, Runtime};
 use udp_traffic_generator::{manager, Parameters};
+use mimalloc::MiMalloc;
 
-
+#[global_allocator]
+static GLOBAL: MiMalloc = MiMalloc;
 
 fn main() {
 

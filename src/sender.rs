@@ -1,11 +1,11 @@
-use std::{net::SocketAddr, time::{Duration, Instant}};
+use std::time::{Duration, Instant};
 
 use log::info;
 use tokio::{net::UdpSocket, sync::mpsc::Sender, time::sleep};
 
 use crate::statistics::StatPacket;
 
-pub async fn sender_task(id: usize, socket: UdpSocket, server: SocketAddr, payload: Vec<u8>, rate: usize, stats_tx: Sender<StatPacket>){
+pub async fn sender_task(id: usize, socket: UdpSocket, payload: &'static [u8], rate: usize, stats_tx: Sender<StatPacket>){
     info!("client {} spawned",id);
     let one_sec = Duration::new(1,0);
     loop { 
@@ -13,7 +13,7 @@ pub async fn sender_task(id: usize, socket: UdpSocket, server: SocketAddr, paylo
         let mut packets_error = 0;
 
         for _ in 0..rate {
-            if socket.send_to(&payload, server).await.is_err() {
+            if socket.send(payload).await.is_err() {
                 packets_error+=1;
             }
         }
