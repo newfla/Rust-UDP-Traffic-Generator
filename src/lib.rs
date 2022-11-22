@@ -1,6 +1,5 @@
-use std::{net::SocketAddr, time::Duration};
+use std::{net::SocketAddr, time::Duration,iter::repeat_with};
 
-use rand::{thread_rng, distributions::Alphanumeric, Rng};
 use statistics::stats_task;
 use sender::sender_task;
 use tokio::{net::UdpSocket, time::sleep, task::JoinSet};
@@ -39,10 +38,7 @@ async fn setup_socket(port: usize, addr: SocketAddr) -> UdpSocket{
 }
 
 fn generate_payloads(len: usize) -> Vec<u8>{
-    thread_rng()
-        .sample_iter(&Alphanumeric)
-        .take(len)
-        .collect()
+    repeat_with(|| fastrand::u8(..)).take(len).collect()
 }
 
 

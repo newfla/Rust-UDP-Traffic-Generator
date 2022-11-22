@@ -14,7 +14,7 @@ categories = ["command-line-utilities"]
 [dependencies]
 log = "0.4.17"
 simple_logger = "2.3.0"
-rand = "0.8.5"
+fastrand = "1.8.0"
 clap = "3.2.20"
 byte-unit = "4.0.14"
 tokio = { version = "1.22.0", features = ["full"] }
