@@ -1,11 +1,12 @@
 use std::time::{Duration, Instant};
 
+use kanal::AsyncSender;
 use log::info;
-use tokio::{net::UdpSocket, sync::mpsc::Sender, time::sleep};
+use tokio::{net::UdpSocket, time::sleep};
 
 use crate::statistics::StatPacket;
 
-pub async fn sender_task(id: usize, socket: UdpSocket, payload: &'static [u8], rate: usize, stats_tx: Sender<StatPacket>){
+pub async fn sender_task(id: usize, socket: UdpSocket, payload: &'static [u8], rate: usize, stats_tx: AsyncSender<StatPacket>){
     info!("client {} spawned",id);
     let one_sec = Duration::new(1,0);
     loop { 

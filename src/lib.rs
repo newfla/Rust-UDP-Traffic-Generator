@@ -10,7 +10,7 @@ mod sender;
 pub async fn manager (params: Parameters) {
     
 
-    let stats_tx = stats_task();
+    let stats_tx = stats_task(params.connections);
 
     let mut tasks = JoinSet::new();
     let mut start_port = params.start_port; 

@@ -18,6 +18,7 @@ fastrand = "1.8.0"
 clap = "3.2.20"
 byte-unit = "4.0.14"
 tokio = { version = "1.22.0", features = ["full"] }
+kanal = "0.1.0-pre7"
 mimalloc = { version = "*", default-features = false }
 
 [profile.release]
