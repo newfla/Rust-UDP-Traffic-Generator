@@ -3,6 +3,7 @@ use std::{net::SocketAddr, time::Duration,iter::repeat_with};
 use statistics::stats_task;
 use sender::sender_task;
 use tokio::{net::UdpSocket, time::sleep, task::JoinSet};
+use derive_new::new;
 
 mod statistics;
 mod sender;
@@ -41,22 +42,12 @@ fn generate_payloads(len: usize) -> Vec<u8>{
     repeat_with(|| fastrand::u8(..)).take(len).collect()
 }
 
-
+#[derive(new)]
 pub struct Parameters {
     server_addr: SocketAddr,
     rate: usize,
     connections: usize,
     len: usize,
     start_port: usize
-}
-
-impl Parameters {
-    pub fn new(server_addr: SocketAddr,
-        rate: usize,
-        connections: usize,
-        len: usize,
-        start_port: usize) -> Self {
-            Self { server_addr, rate, connections, len, start_port }
-        }
 }
 
