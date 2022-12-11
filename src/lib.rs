@@ -25,7 +25,7 @@ pub async fn manager (params: Parameters) {
             sender_task(id, socket, x, params.rate, stats_tx_cloned).await
         });
         start_port+=1;
-        sleep(Duration::from_millis(100)).await;
+        sleep(Duration::from_millis(50)).await;
     }
     while (tasks.join_next().await).is_some() {
 
