@@ -3,7 +3,7 @@ use std::net::ToSocketAddrs;
 use byte_unit::Byte;
 use log::{info,warn, LevelFilter};
 use simple_logger::SimpleLogger;
-use clap::{App, Arg, ArgMatches};
+use clap::{Arg, ArgMatches, Command};
 use tokio::runtime::{Builder, Runtime};
 use udp_traffic_generator::{manager, Parameters};
 use mimalloc::MiMalloc;
@@ -21,59 +21,53 @@ fn main() {
     rt.block_on(async {manager(extract_parameters(cli)).await;});
 }
 fn build_cli() -> ArgMatches {
-    App::new("UDP TRAFFIC GENERATOR")
+    Command::new("UDP TRAFFIC GENERATOR")
         .version(option_env!("CARGO_PKG_VERSION").unwrap_or(""))
         .about("Simple stress test for UDP Server")
         .arg(
-            Arg::with_name("addr")
+            Arg::new("addr")
                 .short('d')
                 .long("destination")
                 .help("Server address as IP:PORT")
-                .takes_value(true)
                 .required(true)
         )
         .arg(
-            Arg::with_name("clients")
+            Arg::new("clients")
                 .short('c')
                 .long("connections")
                 .help("Number of clients to simulate")
-                .takes_value(true)
                 .default_value("1")
                 .value_parser(clap::value_parser!(usize))
         )
 
         .arg(
-            Arg::with_name("length")
+            Arg::new("length")
                 .short('l')
                 .long("length")
                 .help("Payload size as bytes")
-                .takes_value(true)
                 .default_value("16")
                 .value_parser(clap::value_parser!(usize))
         )
         .arg(
-            Arg::with_name("rate")
+            Arg::new("rate")
                 .short('r')
                 .long("rate")
                 .help("Defined as packets/sec")
-                .takes_value(true)
                 .default_value("1")
                 .value_parser(clap::value_parser!(usize))
 
         ).arg(
-            Arg::with_name("port")
+            Arg::new("port")
                 .short('p')
                 .long("port")
                 .help("Starting source port for clients")
-                .takes_value(true)
                 .default_value("8000")
                 .value_parser(clap::value_parser!(usize))
         ).arg(
-            Arg::with_name("workers")
+            Arg::new("workers")
                 .short('w')
                 .long("workers")
                 .help("Number of worker threads for the Tokio runtime [default: #CPU core]")
-                .takes_value(true)
                 .value_parser(clap::value_parser!(usize))
         )
         .get_matches()
