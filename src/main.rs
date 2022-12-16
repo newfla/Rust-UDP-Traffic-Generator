@@ -69,6 +69,13 @@ fn build_cli() -> ArgMatches {
                 .long("workers")
                 .help("Number of worker threads for the Tokio runtime [default: #CPU core]")
                 .value_parser(clap::value_parser!(usize))
+        ).arg(
+            Arg::new("timeout")
+                .short('s')
+                .long("sleep time")
+                .help("Timeout between consecutive connections spawn as ms")
+                .default_value("50")
+                .value_parser(clap::value_parser!(u64))
         )
         .get_matches()
 }
@@ -97,12 +104,14 @@ fn extract_parameters(matches: ArgMatches) -> Parameters {
     let connections :usize = *matches.get_one("clients").unwrap();
     let len: usize= *matches.get_one("length").unwrap();
     let start_port: usize = *matches.get_one("port").unwrap();
+    let sleep: u64 = *matches.get_one("timeout").unwrap();
 
     let bandwidth = Byte::from_bytes((connections * rate * len * 8) as u128).get_appropriate_unit(false).to_string();
     let bandwidth = bandwidth[0..bandwidth.len()-1].to_string();
 
-    info!("Server address: {}, clients: {}, payload size: {}, rate: {}",server_addr, connections, len, rate);
-    info!("Theoretical Packets rate: {} pks/sec, Theoretical Bandwidth: {}bit/s", connections * rate, bandwidth);
+    info!("Server address: {}, clients: {}, payload size: {}, rate: {}, sleep timeout:{}",server_addr, connections, len, rate,sleep);
+    info!("Theoretical Packets rate: {} pks/sec", connections * rate);
+    info!("Theoretical Bandwidth: {}bit/s", bandwidth);
 
-    Parameters::new( server_addr, rate, connections, len, start_port)
+    Parameters::new( server_addr, rate, connections, len, start_port, sleep)
 }

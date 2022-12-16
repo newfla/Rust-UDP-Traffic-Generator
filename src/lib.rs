@@ -25,7 +25,7 @@ pub async fn manager (params: Parameters) {
             sender_task(id, socket, x, params.rate, stats_tx_cloned).await
         });
         start_port+=1;
-        sleep(Duration::from_millis(50)).await;
+        sleep(Duration::from_millis(params.sleep)).await;
     }
     while (tasks.join_next().await).is_some() {
 
@@ -33,7 +33,7 @@ pub async fn manager (params: Parameters) {
 }
 
 async fn setup_socket(port: usize, addr: SocketAddr) -> UdpSocket{
-    let socket = UdpSocket::bind("0.0.0.0:".to_owned()+ &port.to_string()).await.unwrap();
+    let socket = UdpSocket::bind("0.0.0.0:".to_owned() + &port.to_string()).await.unwrap();
     socket.connect(addr).await.unwrap();
     socket
 }
@@ -48,6 +48,7 @@ pub struct Parameters {
     rate: usize,
     connections: usize,
     len: usize,
-    start_port: usize
+    start_port: usize,
+    sleep: u64
 }
 

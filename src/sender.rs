@@ -1,13 +1,13 @@
 use std::time::{Duration, Instant};
 
 use kanal::AsyncSender;
-use log::info;
+use log::debug;
 use tokio::{net::UdpSocket, time::sleep};
 
 use crate::statistics::StatPacket;
 
 pub async fn sender_task(id: usize, socket: UdpSocket, payload: &'static [u8], rate: usize, stats_tx: AsyncSender<StatPacket>){
-    info!("client {} spawned",id);
+    debug!("client {} spawned",id);
     let one_sec = Duration::new(1,0);
     loop { 
         let start_time = Instant::now();
