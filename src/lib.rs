@@ -20,9 +20,8 @@ pub async fn manager (params: Parameters) {
         let socket = setup_socket(start_port,params.server_addr).await;
         let payload = generate_payloads(params.len);
         let stats_tx_cloned = stats_tx.clone();
-        let x= Box::leak(Box::new(payload));
         tasks.spawn(async move {
-            sender_task(id, socket, x, params.rate, stats_tx_cloned).await
+            sender_task(id, socket, payload, params.rate, stats_tx_cloned).await
         });
         start_port+=1;
         sleep(Duration::from_millis(params.sleep)).await;

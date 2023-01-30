@@ -3,7 +3,7 @@ use std::time::Duration;
 use byte_unit::Byte;
 use kanal::{AsyncSender, bounded_async};
 use log::info;
-use tokio::{spawn, time::interval, select};
+use tokio::{spawn, time::{interval_at, Instant}, select};
 
 pub type StatPacket = (usize, usize);
 
@@ -13,7 +13,8 @@ pub fn stats_task(clients: usize) -> AsyncSender<StatPacket> {
 
     spawn(async move {
         let timer_duration = 10.;
-        let mut timer = interval(Duration::from_secs(timer_duration as u64));
+        let duration = Duration::from_secs(timer_duration as u64);
+        let mut timer = interval_at(Instant::now() + duration, duration);
 
         let mut bytes_sent = 0.;
         let mut packets_sent = 0;

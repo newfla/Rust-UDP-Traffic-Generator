@@ -1,12 +1,12 @@
-use std::time::{Duration, Instant};
 
+use coarsetime::{Duration, Instant};
 use kanal::AsyncSender;
 use log::debug;
 use tokio::{net::UdpSocket, time::sleep};
 
 use crate::statistics::StatPacket;
 
-pub async fn sender_task(id: usize, socket: UdpSocket, payload: &'static [u8], rate: usize, stats_tx: AsyncSender<StatPacket>){
+pub async fn sender_task(id: usize, socket: UdpSocket, payload: Vec<u8>, rate: usize, stats_tx: AsyncSender<StatPacket>){
     debug!("client {} spawned",id);
     let one_sec = Duration::new(1,0);
     loop { 
@@ -14,7 +14,7 @@ pub async fn sender_task(id: usize, socket: UdpSocket, payload: &'static [u8], r
         let mut packets_error = 0;
 
         for _ in 0..rate {
-            if socket.send(payload).await.is_err() {
+            if socket.send(&payload).await.is_err() {
                 packets_error+=1;
             }
         }
@@ -25,7 +25,7 @@ pub async fn sender_task(id: usize, socket: UdpSocket, payload: &'static [u8], r
 
         if time_elapsed < one_sec {
             let time_to_sleep = one_sec - time_elapsed;
-            sleep(time_to_sleep).await;
+            sleep(time_to_sleep.into()).await;
         }
     }
 }
