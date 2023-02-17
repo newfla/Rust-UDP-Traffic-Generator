@@ -81,21 +81,21 @@ fn build_cli() -> ArgMatches {
 }
 
 fn build_runtime(cli: &ArgMatches) -> Runtime {
-    let mut rt = Runtime::new().unwrap();
-    let workers = cli.get_one::<usize>("workers");
 
-    if let Some(workers) = workers {
+    let worker_threads = cli.get_one::<usize>("workers");
+    let mut rt_builder = Builder::new_multi_thread();
+    if let Some(workers) = worker_threads {
         if *workers > 0 {
-            rt = Builder::new_multi_thread()
-                .worker_threads(*workers)
-                .enable_all()
-                .build()
-                .unwrap();
-        } else {
-            warn!("Workers threads must be > 0. Switching to #CPU Core");
+            rt_builder.worker_threads(*workers);
         }
+
+    }else {
+        warn!("Workers threads must be > 0. Switching to #CPU Core");
     }
-    rt
+
+    rt_builder.enable_all()
+              .build()
+              .unwrap()
 }
 
 fn extract_parameters(matches: ArgMatches) -> Parameters {
