@@ -4,11 +4,12 @@ use kanal::AsyncSender;
 use log::debug;
 use tokio::{net::UdpSocket, time::sleep};
 
-use crate::statistics::StatPacket;
+use crate::{statistics::StatPacket, DtlsSession};
 
-pub async fn sender_task(id: usize, socket: UdpSocket, payload: Vec<u8>, rate: usize, stats_tx: AsyncSender<StatPacket>){
+pub async fn sender_task_plain(id: usize, socket: UdpSocket, payload: Vec<u8>, rate: usize, stats_tx: AsyncSender<StatPacket>){
     debug!("client {} spawned",id);
     let one_sec = Duration::new(1,0);
+    
     loop { 
         let start_time = Instant::now();
         let mut packets_error = 0;
@@ -18,14 +19,43 @@ pub async fn sender_task(id: usize, socket: UdpSocket, payload: Vec<u8>, rate: u
                 packets_error+=1;
             }
         }
-        let packets_sent = rate - packets_error;
-        let _ = stats_tx.send((packets_sent * payload.len(),packets_sent)).await;
 
-        let time_elapsed = Instant::now() - start_time;
+        send_stats(rate, payload.len(), packets_error, &stats_tx).await;
+        maybe_sleep(start_time, one_sec).await;
+        
+    }
+}
 
-        if time_elapsed < one_sec {
-            let time_to_sleep = one_sec - time_elapsed;
-            sleep(time_to_sleep.into()).await;
+pub async fn sender_task_dtls(id: usize, mut session: DtlsSession, payload: Vec<u8>, rate: usize, stats_tx: AsyncSender<StatPacket>){
+    debug!("client {} spawned",id);
+    let one_sec = Duration::new(1,0);
+
+    loop { 
+        let start_time = Instant::now();
+        let mut packets_error = 0;
+
+        for _ in 0..rate {
+            if session.write(&payload).await.is_err() {
+                packets_error+=1;
+            }
         }
+
+        send_stats(rate, payload.len(), packets_error, &stats_tx).await;
+        maybe_sleep(start_time, one_sec).await;
+    }
+}
+
+async fn send_stats (rate: usize, payload_len: usize, packets_error: usize, stats_tx: &AsyncSender<StatPacket>) {
+    let packets_sent = rate - packets_error;
+    let _ = stats_tx.send((packets_sent * payload_len, packets_sent)).await;
+
+}
+
+async fn maybe_sleep(start_time: Instant, duration: Duration){
+    let time_elapsed = Instant::now() - start_time;
+
+    if time_elapsed < duration {
+        let time_to_sleep = duration - time_elapsed;
+        sleep(time_to_sleep.into()).await;
     }
 }

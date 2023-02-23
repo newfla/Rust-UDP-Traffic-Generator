@@ -39,7 +39,6 @@ fn build_cli() -> ArgMatches {
                 .default_value("1")
                 .value_parser(clap::value_parser!(usize))
         )
-
         .arg(
             Arg::new("length")
                 .short('l')
@@ -72,10 +71,21 @@ fn build_cli() -> ArgMatches {
         ).arg(
             Arg::new("timeout")
                 .short('s')
-                .long("sleep time")
+                .long("timeout")
                 .help("Timeout between consecutive connections spawn as ms")
                 .default_value("50")
                 .value_parser(clap::value_parser!(u64))
+        ).arg(
+            Arg::new("dtls")
+                .long("dtls")
+                .help("Send data over DTLS")
+                .default_value("false")
+                .value_parser(clap::value_parser!(bool))
+        ).arg(
+            Arg::new("ca")
+                .long("ca")
+                .help("PEM File to validate server credentials")
+                .value_parser(clap::value_parser!(String))
         )
         .get_matches()
 }
@@ -109,9 +119,12 @@ fn extract_parameters(matches: ArgMatches) -> Parameters {
     let bandwidth = Byte::from_bytes((connections * rate * len * 8) as u128).get_appropriate_unit(false).to_string();
     let bandwidth = bandwidth[0..bandwidth.len()-1].to_string();
 
-    info!("Server address: {}, clients: {}, payload size: {}, rate: {}, sleep timeout:{}",server_addr, connections, len, rate,sleep);
+    let use_dtls: bool = *matches.get_one("dtls").unwrap();
+    let ca_file= matches.get_one("ca").cloned();
+
+    info!("Server address: {}, clients: {}, payload size: {}, rate: {}, sleep timeout:{}, dtls: {}",server_addr, connections, len, rate, sleep, use_dtls);
     info!("Theoretical Packets rate: {} pks/sec", connections * rate);
     info!("Theoretical Bandwidth: {}bit/s", bandwidth);
 
-    Parameters::new( server_addr, rate, connections, len, start_port, sleep)
+    Parameters::new( server_addr, rate, connections, len, start_port, sleep, (use_dtls, ca_file))
 }

@@ -1,6 +1,6 @@
 [package]
 name = "udp_traffic_generator"
-version = "0.1.4"
+version = "0.2.0"
 edition = "2021"
 authors = ["Flavio Bizzarri <fl.bizzarri@gmail.com>"]
 license = "Apache-2.0"
@@ -15,10 +15,12 @@ categories = ["command-line-utilities"]
 log = "0.4"
 simple_logger = "4.0"
 fastrand = "1.8"
-clap = "4.0"
+clap = "4.1"
 byte-unit = "4.0"
 coarsetime = "0.1"
 tokio = { version = "1.25", features = ["full"] }
+tokio-dtls-stream-sink = "0.6.0"
+openssl = { version = "0.10", features = ["vendored"] }
 kanal = "0.1.0-pre8"
 derive-new = "0.5"
 mimalloc = { version = "0.1", default-features = false }

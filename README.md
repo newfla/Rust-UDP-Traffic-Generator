@@ -1,6 +1,6 @@
 # Rust UDP Traffic Generator
 
-A CLI tool to generate UDP traffic based on [Tokio framework](https://https://tokio.rs).
+A CLI tool to generate UDP and DTLS traffic based on [Tokio framework](https://https://tokio.rs).
 
 # Cargo Install
 
@@ -23,6 +23,8 @@ Options:
   -r, --rate <rate>            Defined as packets/sec [default: 1]
   -p, --port <port>            Starting source port for clients [default: 8000]
   -w, --workers <workers>      Number of worker threads for the Tokio runtime [default: #CPU core]
-  -s, --sleep time <timeout>   Timeout between consecutive connections spawn as ms [default: 50]
-  -h, --help                   Print help information
-  -V, --version                Print version information
+  -s, --timeout <timeout>      Timeout between consecutive connections spawn as ms [default: 50]
+      --dtls <dtls>            Send data over DTLS [default: false] [possible values: true, false]
+      --ca <ca>                PEM File to validate server credentials
+  -h, --help                   Print help
+  -V, --version                Print version
