@@ -23,17 +23,15 @@ pub fn stats_task(clients: usize) -> AsyncSender<StatPacket> {
                 _ = timer.tick() => {
                     bytes_sent*=8.;
                     let bandwidth = Byte::from_bytes((bytes_sent / timer_duration) as u128).get_appropriate_unit(false).to_string();
-                    let bandwidth = bandwidth[0..bandwidth.len()-1].to_string();
-                    info!("Sent {} packets --- Bandwidth {}bit/s", packets_sent, bandwidth);
+                    let bandwidth = &bandwidth[0..bandwidth.len()-1];
+                    info!("Sent {packets_sent} packets --- Bandwidth {bandwidth}bit/s");
                     bytes_sent = 0.;
                     packets_sent = 0;
                 }
-                stat = stats_rx.recv() => {
-                    if let Ok((bytes,packets)) = stat {
-                        bytes_sent += bytes as f64;
-                        packets_sent += packets;
-                    }
-                }
+                stat = stats_rx.recv() => if let Ok((bytes,packets)) = stat {
+                    bytes_sent += bytes as f64;
+                    packets_sent += packets;
+                } 
             }
         }
     });

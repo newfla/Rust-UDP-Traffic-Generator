@@ -1,7 +1,7 @@
 use std::net::ToSocketAddrs;
 
 use byte_unit::Byte;
-use log::{info,warn, LevelFilter};
+use log::{info, warn, LevelFilter};
 use simple_logger::SimpleLogger;
 use clap::{Arg, ArgMatches, Command};
 use tokio::runtime::{Builder, Runtime};
@@ -99,7 +99,7 @@ fn build_runtime(cli: &ArgMatches) -> Runtime {
             rt_builder.worker_threads(*workers);
         }
 
-    }else {
+    } else {
         warn!("Workers threads must be > 0. Switching to #CPU Core");
     }
 
@@ -111,8 +111,8 @@ fn build_runtime(cli: &ArgMatches) -> Runtime {
 fn extract_parameters(matches: ArgMatches) -> Parameters {
     let server_addr =  matches.get_one::<String>("addr").unwrap().to_socket_addrs().unwrap().next().unwrap();
     let rate: usize = *matches.get_one("rate").unwrap();
-    let connections :usize = *matches.get_one("clients").unwrap();
-    let len: usize= *matches.get_one("length").unwrap();
+    let connections: usize = *matches.get_one("clients").unwrap();
+    let len: usize = *matches.get_one("length").unwrap();
     let start_port: usize = *matches.get_one("port").unwrap();
     let sleep: u64 = *matches.get_one("timeout").unwrap();
 
@@ -120,11 +120,11 @@ fn extract_parameters(matches: ArgMatches) -> Parameters {
     let bandwidth = bandwidth[0..bandwidth.len()-1].to_string();
 
     let use_dtls: bool = *matches.get_one("dtls").unwrap();
-    let ca_file= matches.get_one("ca").cloned();
+    let ca_file = matches.get_one("ca").cloned();
 
-    info!("Server address: {}, clients: {}, payload size: {}, rate: {}, sleep timeout:{}, dtls: {}",server_addr, connections, len, rate, sleep, use_dtls);
-    info!("Theoretical Packets rate: {} pks/sec", connections * rate);
+    info!("Server address: {}, clients: {}, payload size: {}, rate: {} pkt/s, sleep timeout:{} ms, dtls: {}",server_addr, connections, len, rate, sleep, use_dtls);
+    info!("Theoretical Packets rate: {} pkt/sec", connections * rate);
     info!("Theoretical Bandwidth: {}bit/s", bandwidth);
 
-    Parameters::new( server_addr, rate, connections, len, start_port, sleep, (use_dtls, ca_file))
+    Parameters::new(server_addr, rate, connections, len, start_port, sleep, (use_dtls, ca_file))
 }
