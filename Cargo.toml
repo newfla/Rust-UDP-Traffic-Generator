@@ -18,8 +18,8 @@ fastrand = "1.9"
 clap = "4.1"
 byte-unit = "4.0"
 coarsetime = "0.1"
-tokio = { version = "1.25", features = ["full"] }
-tokio-dtls-stream-sink = "0.6.0"
+tokio = { version = "1.2", features = ["full"] }
+tokio-dtls-stream-sink = "0.6"
 openssl = { version = "0.10", features = ["vendored"] }
 kanal = "0.1.0-pre8"
 derive-new = "0.5"
