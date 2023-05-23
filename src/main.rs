@@ -23,7 +23,7 @@ fn main() {
 fn build_cli() -> ArgMatches {
     Command::new("UDP TRAFFIC GENERATOR")
         .version(option_env!("CARGO_PKG_VERSION").unwrap_or(""))
-        .about("Simple stress test for UDP Server")
+        .about("Simple stress test for UDP/DTLS Server")
         .arg(
             Arg::new("addr")
                 .short('d')

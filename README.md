@@ -1,3 +1,7 @@
+# DEPRECATION NOTICE
+
+Switch to [crab-net](https://github.com/newfla/crab-net) with <TCP|UDP> + TLS support.
+
 # Rust UDP Traffic Generator
 
 A CLI tool to generate UDP and DTLS traffic based on [Tokio framework](https://https://tokio.rs).
